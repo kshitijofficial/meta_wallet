@@ -1,5 +1,21 @@
-
+import { useWalletContext } from "../../context/useWalletContext";
 export default function AccountCard() {
+    const {
+        seedPhrase,
+        accounts,
+        activeChainId,
+        activeAccountIndex,
+        selectedAccount
+    } = useWalletContext();
+
+    console.log(
+        "Seed Phrase:", seedPhrase,
+        "| Accounts:", accounts,
+        "| Active Chain ID:", activeChainId,
+        "| Active Account Index:", activeAccountIndex,
+        "| Selected Account:", selectedAccount
+    );
+
     let isLoading = false
     return (
         <div className="card">
