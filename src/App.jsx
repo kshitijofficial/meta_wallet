@@ -6,6 +6,7 @@ import CreateAccount from "./components/Account/CreateAccount";
 import RecoverAccount from "./components/Account/RecoverAccount";
 import SendCrypto from "./components/Wallet/SendCrypto";
 import ChainSelector from "./components/Wallet/ChainSelector";
+import RecentActivity from "./components/Wallet/RecentActivity"
 
 function App() {
   return (
@@ -43,6 +44,9 @@ function App() {
 
           <div className="section">
             <SendCrypto />
+          </div>
+          <div className="section">
+            <RecentActivity />
           </div>
 
           <div className="section">
