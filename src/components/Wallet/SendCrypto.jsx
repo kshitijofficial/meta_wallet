@@ -11,8 +11,8 @@ export default function SendCrypto() {
     const [amount, setAmount] = useState("")
     const [status, setStatus] = useState("")
 
-    const shortenAddress = () => {
-        if (!addres) return '';
+    const shortenAddress = (address) => {
+        if (!address) return '';
         return `${address.slice(0, 6)}...${address.slice(-4)}`;
     }
 
@@ -41,7 +41,7 @@ export default function SendCrypto() {
                 const updatedAccounts = accounts.map(acc =>
                     acc.address === selectedAccount.address ? { ...acc, balance: newBalance } : acc
                 );
-                setAccounts(updateAccounts);
+                setAccounts(updatedAccounts);
                 setStatus(`Transaction Successful! Hash: ${shortenAddress(txResult.transactionHash)} `);
                 setTo("")
                 setAmount("")
@@ -69,10 +69,9 @@ export default function SendCrypto() {
                 <input
                     className="input"
                     type="number"
-                    placeholder={`Amount 'ETH'
-})`}
+                    placeholder={`Amount 'ETH'`}
                     value={amount}
-                    onChange={e => setTo(e.target.value)}
+                    onChange={e => setAmount(e.target.value)}
 
                 />
                 <div className="spacer-sm" />

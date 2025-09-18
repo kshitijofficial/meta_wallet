@@ -1,6 +1,27 @@
-
+import { useWalletContext } from "../../context/useWalletContext";
 export default function CreateAccount() {
-    let selectedAccount = true;
+
+    const { addAccount, accounts, setSelectedAccount, selectedAccount } = useWalletContext();
+    const handleChange = (e) => {
+        const acc = accounts.find(a => a.address === e.target.value);
+        setSelectedAccount(acc);
+    }
+    // Function to format address for display
+    const shortenAddress = (address) => {
+        if (!address) return '';
+        return `${address.slice(0, 6)}...${address.slice(-4)}`;
+    };
+
+    // Function to copy address to clipboard
+    const copyToClipboard = async (address) => {
+        try {
+            await navigator.clipboard.writeText(address);
+            console.log('Address copied to clipboard');
+        } catch (err) {
+            console.error('Failed to copy address:', err);
+        }
+    };
+
 
     return (
         <div>
@@ -9,23 +30,28 @@ export default function CreateAccount() {
             <div className="row stack">
                 <select
                     className="input"
-
-
+                    value={selectedAccount?.address || ""}
+                    onChange={handleChange}
                 >
                     <option value="">-- Select an account --</option>
-                    <option>Value 1</option>
-                    <option>Value 2</option>
+                    {
+                        accounts.map(acc => (
+                            <option key={acc.index} value={acc.address}>
+                                {`#${acc.index} - ${shortenAddress(acc.address)} (Bal:${acc.balance})`}
+                            </option>
+                        ))
+                    }
                 </select>
 
                 <div className="row" style={{ gap: '8px' }}>
-                    <button className="btn btn-primary" >
+                    <button className="btn btn-primary" onClick={addAccount}>
                         Create Account
                     </button>
 
                     {selectedAccount && (
                         <button
                             className="btn btn-secondary"
-
+                            onClick={() => copyToClipboard(selectedAccount.address)}
                             title="Copy address to clipboard"
                         >
                             Copy Address

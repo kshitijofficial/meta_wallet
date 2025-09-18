@@ -26,6 +26,15 @@ export const WalletProvider = ({ children }) => {
         initWallet();
     }, [])
 
+    const addAccount = async () => {
+        const newIndex = accounts.length;
+        const { privateKey, address } = deriveAccount(seedPhrase, newIndex);
+        const balance = await getBalance(address, CHAINS[activeChainId].rpc);
+        const newAccount = { privateKey, address, balance, index: newIndex };
+        const updatedAccounts = [...accounts, newAccount];
+        setAccounts(updatedAccounts)
+    }
+
     const changeNetwork = async (newChainId) => {
         if (!CHAINS[newChainId]) {
             console.error("Unsupported chain ID:", newChainId);
@@ -45,12 +54,16 @@ export const WalletProvider = ({ children }) => {
     return (
         <WalletContext.Provider
             value={{
+                setSeedPhrase,
                 seedPhrase,
                 accounts,
                 activeChainId,
                 activeAccountIndex,
                 selectedAccount,
-                changeNetwork
+                setSelectedAccount,
+                changeNetwork,
+                setAccounts,
+                addAccount
             }}
         >
             {children}
