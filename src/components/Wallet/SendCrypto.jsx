@@ -10,6 +10,7 @@ export default function SendCrypto() {
     const [to, setTo] = useState("")
     const [amount, setAmount] = useState("")
     const [status, setStatus] = useState("")
+    const [txUrl, setTxUrl] = useState(null);
 
     const shortenAddress = (address) => {
         if (!address) return '';
@@ -29,6 +30,7 @@ export default function SendCrypto() {
 
         try {
             setStatus("Sending...")
+            setTxUrl(null)
             const txResult = await sendNativeTransfer(
                 selectedAccount.privateKey,
                 to,
@@ -42,7 +44,14 @@ export default function SendCrypto() {
                     acc.address === selectedAccount.address ? { ...acc, balance: newBalance } : acc
                 );
                 setAccounts(updatedAccounts);
-                setStatus(`Transaction Successful! Hash: ${shortenAddress(txResult.transactionHash)} `);
+                const explorerBase = CHAINS[activeChainId]?.explorerTx;
+                if (explorerBase) {
+                    const url = `${explorerBase}${txResult.transactionHash}`
+                    setTxUrl(url)
+                    setStatus("Transaction Successful")
+                } else {
+                    setStatus(`Transaction Successful! Hash: ${shortenAddress(txResult.transactionHash)} `);
+                }
                 setTo("")
                 setAmount("")
             } else {
@@ -78,6 +87,13 @@ export default function SendCrypto() {
                 <button className="btn btn-primary" onClick={handleSend} >Send</button>
             </div>
             <p className="status">{status}</p>
+            {txUrl && (
+                <p className="status">
+                    <a href={txUrl} target="_blank" rel="noreferrer">
+                        View on {CHAINS[activeChainId]?.name?.includes('Polygon') ? 'Polygonscan' : 'Etherscan'}
+                    </a>
+                </p>
+            )}
         </div>
     );
 }
