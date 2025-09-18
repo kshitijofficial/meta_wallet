@@ -7,7 +7,8 @@ export const CHAINS = {
   11155111: { 
     name: 'Sepolia', 
     rpc: import.meta.env.VITE_SEPOLIA_RPC,
-    explorerTx: 'https://sepolia.etherscan.io/tx/'
+    explorerTx: 'https://sepolia.etherscan.io/tx/',
+    faucetUrl: 'https://cloud.google.com/application/web3/faucet/ethereum/sepolia'
   },
   80002: { 
     name: 'Polygon Amoy', 

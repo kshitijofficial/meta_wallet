@@ -86,6 +86,13 @@ export default function SendCrypto() {
                 <div className="spacer-sm" />
                 <button className="btn btn-primary" onClick={handleSend} >Send</button>
             </div>
+            {
+                CHAINS[activeChainId]?.faucetUrl && (
+                    <p className="status">
+                        Need test ETH? Get some from the faucet:<a href={CHAINS[activeChainId].faucetUrl}> Click Here</a>
+                    </p>
+                )
+            }
             <p className="status">{status}</p>
             {txUrl && (
                 <p className="status">
