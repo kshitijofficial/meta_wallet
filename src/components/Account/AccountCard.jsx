@@ -2,6 +2,7 @@ import { useWalletContext } from '../../context/useWalletContext';
 import { useEffect, useState } from 'react';
 import { getBalance } from '../../utils/getBalance';
 import { CHAINS } from '../../services/chainConfig';
+import { getUsdPrices } from '../../services/priceService';
 
 export default function AccountCard() {
     const {
@@ -13,6 +14,7 @@ export default function AccountCard() {
 
     const [currentBalance, setCurrentBalance] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [usdValue,setUsdValue] =useState(null);
 
     // Function to copy address to clipboard
     const copyToClipboard = async (address) => {
@@ -43,9 +45,23 @@ export default function AccountCard() {
                 acc.address === selectedAccount.address ? { ...acc, balance } : acc
             )
             setAccounts(updateAccounts)
+
+            //Price: show inline USD like Metamask
+
+            try{
+                const {ethUsd,polUsd} = await getUsdPrices();
+                const isPolygon = activeChainId === 80002;
+                const unitUsd = isPolygon?polUsd:ethUsd;
+                const totalUsd = parseFloat(balance || '0') * (unitUsd || 0);
+                setUsdValue(totalUsd)
+            }catch(e){
+                console.error('USD price fetch failed',e);
+                setUsdValue(null)
+            }
         } catch (error) {
             console.error('Failed to fetch balance:', error);
             setCurrentBalance(null)
+            setUsdValue(null)
         } finally {
             setIsLoading(false);
         }
@@ -93,11 +109,18 @@ export default function AccountCard() {
             </div>
             <div className="spacer-sm" />
             <div className="row" style={{ justifyContent: 'space-between', alignItems: 'center' }}>
-                <p style={{ margin: 0 }}>
-                    <strong>Balance:</strong>{' '}
-                    {isLoading ? 'Loading...' :
-                        currentBalance !== null ? `${currentBalance} ${getCurrencySymbol()}` : 'Failed to load'}
-                </p>
+                <div style={{ margin: 0 }}>
+                    <p style={{ margin: 0 }}>
+                        <strong>Balance:</strong>{' '}
+                        {isLoading ? 'Loading...' :
+                            currentBalance !== null ? `${currentBalance} ${getCurrencySymbol()}` : 'Failed to load'}
+                    </p>
+                    {!isLoading && usdValue !== null && (
+                        <p style={{ margin: 0, fontSize: 12, opacity: 0.85 }}>
+                            ${usdValue.toLocaleString('en-US', { maximumFractionDigits: 2 })}
+                        </p>
+                    )}
+                </div>
                 <button
                     className="btn btn-secondary"
                     onClick={refreshBalance}
