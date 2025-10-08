@@ -20,7 +20,7 @@ export default function AccountCard() {
     const copyToClipboard = async (address) => {
         try {
             await navigator.clipboard.writeText(address);
-            console.log('Address copied to clipboard');
+           
         } catch (err) {
             console.error('Failed to copy address:', err);
         }
@@ -39,7 +39,7 @@ export default function AccountCard() {
         try {
 
             const balance = await getBalance(selectedAccount.address, CHAINS[activeChainId].rpc);
-            console.log(balance)
+            
             setCurrentBalance(balance);
             const updateAccounts = accounts.map(acc =>
                 acc.address === selectedAccount.address ? { ...acc, balance } : acc

@@ -2,6 +2,7 @@ import { createContext, useState, useEffect } from "react"
 import { deriveAccount } from "../services/walletService";
 import { getBalance } from "../utils/getBalance";
 import { CHAINS } from "../services/chainConfig"
+import { getTokenBalance, formateTokenBalance, getTokenInfo } from "../services/erc20Service";
 export const WalletContext = createContext();
 
 export const WalletProvider = ({ children }) => {
@@ -10,6 +11,8 @@ export const WalletProvider = ({ children }) => {
     const [activeChainId, setActiveChainId] = useState(1);
     const [activeAccountIndex, setActiveAccountIndex] = useState(0);
     const [selectedAccount, setSelectedAccount] = useState(null);
+    const [importedTokens, setImportedTokens] = useState([]);
+    const [tokenBalances, setTokenBalances] = useState({});
 
     useEffect(() => {
 
@@ -49,8 +52,89 @@ export const WalletProvider = ({ children }) => {
                 return { ...acc, balance };
             })
         )
-        setAccounts(updateAccounts)
+        setAccounts(updateAccounts);
+        await updateTokenBalance(selectedAccount?.address, newChainId);
     }
+
+    const importToken = async (tokenAddress) => {
+        try {
+            if (!selectedAccount) {
+                throw new Error('No account selected')
+            }
+
+            const tokenInfo = await getTokenInfo(tokenAddress, CHAINS[activeChainId].rpc);
+            const existingToken = importedTokens.find(token => token.address.toLowerCase() === tokenAddress.toLowerCase());
+            if (existingToken) {
+                throw new Error('Token already imported')
+            }
+
+            const newToken = { ...tokenInfo, addAt: Date.now() };
+            const updatedTokens = [...importedTokens, newToken];
+            setImportedTokens(updatedTokens);
+            await updateTokenBalance(tokenAddress, selectedAccount.address, activeChainId)
+            return newToken;
+        } catch (error) {
+            console.error('Error importing token:', error);
+            throw error;
+        }
+    }
+
+    const removeToken = (tokenAddress) => {
+        const updatedTokens = importedTokens.filter(token => token.address.toLowerCase() !== tokenAddress.toLowerCase());
+        setImportedTokens(updatedTokens);
+        const updatedBalances = { ...tokenBalances };
+        delete updatedBalances[tokenAddress.toLowerCase()];
+        setTokenBalances(updatedBalances)
+    }
+
+    const updateTokenBalance = async (tokenAddress, walletAddress, chainId) => {
+        try {
+            const balance = await getTokenBalance(tokenAddress, walletAddress, CHAINS[chainId].rpc);
+            
+            const token = importedTokens.find(t => t.address.toLowerCase() === tokenAddress.toLowerCase());
+
+            if (token) {
+                const formattedBalance = formateTokenBalance(balance, token.decimals);
+                console.log("Wallet context balance:",formattedBalance)
+                setTokenBalances(prev => ({
+                    ...prev,
+                    [tokenAddress.toLowerCase()]: formattedBalance
+                }))
+            }
+        } catch (error) {
+            console.error('Error updating token balance:', error)
+        }
+    }
+
+    const updateTokenBalances = async (walletAddress, chainId) => {
+        if (!walletAddress || importedTokens.length === 0) return;
+
+        const balancesPromises = importedTokens.map(async (token) => {
+            try {
+                const balance = await getTokenBalance(token.address, walletAddress, CHAINS[chainId].rpc);
+                console.log("Wallet context balances:",balance)
+                const formattedBalance = formateTokenBalance(balance, token.decimals);
+                return { address: token.address.toLowerCase(), balance: formattedBalance };
+            } catch (error) {
+                console.error(`Error updating token balance for ${token.symbol}`, error);
+                return { address: token.address.toLowerCase(), balance: '0' };
+            }
+        })
+
+        const balances = await Promise.all(balancesPromises);
+        const balanceMap = {};
+        balances.forEach(({ address, balance }) => {
+            balanceMap[address] = balance;
+        });
+        console.log("Map",balances)
+        setTokenBalances(balanceMap)
+    }
+
+    useEffect(() => {
+        if (selectedAccount) {
+            updateTokenBalances(selectedAccount.address, activeChainId);
+        }
+    }, [selectedAccount, activeChainId])
     return (
         <WalletContext.Provider
             value={{
@@ -63,7 +147,12 @@ export const WalletProvider = ({ children }) => {
                 setSelectedAccount,
                 changeNetwork,
                 setAccounts,
-                addAccount
+                addAccount,
+                importedTokens,
+                tokenBalances,
+                importToken,
+                removeToken,
+                updateTokenBalances
             }}
         >
             {children}

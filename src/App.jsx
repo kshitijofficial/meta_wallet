@@ -7,6 +7,8 @@ import RecoverAccount from "./components/Account/RecoverAccount";
 import SendCrypto from "./components/Wallet/SendCrypto";
 import ChainSelector from "./components/Wallet/ChainSelector";
 import RecentActivity from "./components/Wallet/RecentActivity"
+import TokenList from "./components/Wallet/TokenList";
+import ImportToken from "./components/Wallet/ImportToken";
 
 function App() {
   return (
@@ -47,6 +49,13 @@ function App() {
           </div>
           <div className="section">
             <RecentActivity />
+          </div>
+            <div className="section">
+            <ImportToken />
+          </div>
+
+          <div className="section">
+            <TokenList />
           </div>
 
           <div className="section">
