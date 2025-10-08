@@ -46,7 +46,7 @@ export const getTokenBalance = async (tokenAddress, walletAddress, rpcUrl) => {
     const contract = new ethers.Contract(tokenAddress, ERC20_ABI, provider);
 
     const balance = await contract.balanceOf(walletAddress);
-    console.log("Balance",balance)
+    console.log("Balance", balance)
 
     return balance
   } catch (error) {

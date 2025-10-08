@@ -9,6 +9,7 @@ import ChainSelector from "./components/Wallet/ChainSelector";
 import RecentActivity from "./components/Wallet/RecentActivity"
 import TokenList from "./components/Wallet/TokenList";
 import ImportToken from "./components/Wallet/ImportToken";
+import ChatAssistant from "./components/Chat/ChatAssistant";
 
 function App() {
   return (
@@ -62,6 +63,7 @@ function App() {
             <RecoverAccount />
           </div>
         </div>
+        <ChatAssistant/>
       </div>
     </WalletProvider>
   );
