@@ -1,0 +1,274 @@
+.unlock-wallet-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(1200px 800px at 80% -10%, #1a1f27, transparent 60%),
+        radial-gradient(1000px 600px at -10% 110%, #161a20, transparent 60%),
+        #0f1115;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 20px;
+}
+
+.unlock-wallet-container {
+    background: linear-gradient(180deg, #1c2027, #171a21);
+    border: 1px solid #2a2f36;
+    border-radius: 16px;
+    padding: 48px;
+    max-width: 420px;
+    width: 100%;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.unlock-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.unlock-logo {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 24px;
+    background: linear-gradient(135deg, #f6851b, #ff9c41);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #111;
+    box-shadow: 0 8px 24px rgba(246, 133, 27, 0.4);
+}
+
+.unlock-header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #e6e6e6;
+    margin: 0 0 8px 0;
+}
+
+.unlock-header p {
+    font-size: 14px;
+    color: #a0a8b8;
+    margin: 0;
+}
+
+.unlock-form {
+    margin-bottom: 24px;
+}
+
+.input-group {
+    margin-bottom: 24px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #e6e6e6;
+    margin-bottom: 8px;
+}
+
+.password-input-wrapper {
+    position: relative;
+}
+
+.password-input-wrapper input {
+    width: 100%;
+    padding: 14px 50px 14px 16px;
+    background: #0f1218;
+    border: 1px solid #2a2f36;
+    border-radius: 10px;
+    font-size: 16px;
+    color: #e6e6e6;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.password-input-wrapper input:focus {
+    outline: none;
+    border-color: #f6851b;
+    box-shadow: 0 0 0 4px rgba(246, 133, 27, 0.15);
+}
+
+.password-input-wrapper input:disabled {
+    background: #11151d;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.password-input-wrapper input::placeholder {
+    color: #5a6270;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #a0a8b8;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.toggle-password:hover:not(:disabled) {
+    background: rgba(246, 133, 27, 0.1);
+    color: #f6851b;
+}
+
+.toggle-password:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.toggle-password svg {
+    width: 20px;
+    height: 20px;
+}
+
+.error-message {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    padding: 12px;
+    background: rgba(255, 71, 87, 0.1);
+    border: 1px solid rgba(255, 71, 87, 0.3);
+    border-radius: 8px;
+    font-size: 13px;
+    color: #ff4757;
+    animation: shake 0.3s ease;
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-10px);
+    }
+
+    75% {
+        transform: translateX(10px);
+    }
+}
+
+.error-message svg {
+    flex-shrink: 0;
+}
+
+.unlock-button {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(180deg, #ff9c41, #f6851b);
+    color: #111;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    box-shadow: 0 8px 18px rgba(246, 133, 27, 0.35);
+}
+
+.unlock-button:hover:not(:disabled) {
+    filter: brightness(1.05);
+    box-shadow: 0 10px 22px rgba(246, 133, 27, 0.45);
+    transform: translateY(-1px);
+}
+
+.unlock-button:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.unlock-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(17, 17, 17, 0.3);
+    border-top-color: #111;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.unlock-footer {
+    padding-top: 24px;
+    border-top: 1px solid #2a2f36;
+}
+
+.help-text {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 13px;
+    color: #a0a8b8;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.help-text svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: #f6851b;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .unlock-wallet-container {
+        padding: 32px 24px;
+    }
+
+    .unlock-header h1 {
+        font-size: 24px;
+    }
+
+    .unlock-logo {
+        width: 56px;
+        height: 56px;
+    }
+
+    .unlock-logo svg {
+        width: 32px;
+        height: 32px;
+    }
+}
